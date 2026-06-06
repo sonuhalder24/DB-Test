@@ -28,15 +28,11 @@ public class CreateUser extends HttpServlet {
 		String status = "failed";
 		Connection conn = null;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/DBConnection", "root", "mysql");
-
+			conn = getConnection();
 			PreparedStatement checkStmt = conn.prepareStatement(
 				"SELECT * FROM users WHERE userName = ?");
 			checkStmt.setString(1, userName);
 			ResultSet rs = checkStmt.executeQuery();
-
 			if (rs.next()) {
 				status = "exists";
 			} else {
@@ -57,5 +53,22 @@ public class CreateUser extends HttpServlet {
 			}
 		}
 		response.sendRedirect("index.jsp?status=" + status);
+	}
+
+	private Connection getConnection() throws Exception {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			Class.forName("com.mysql.jdbc.Driver");
+		}
+		try {
+			return DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/DBConnection?useSSL=false&allowPublicKeyRetrieval=true",
+				"root", "mysql");
+		} catch (Exception e) {
+			return DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/DBConnection",
+				"root", "mysql");
+		}
 	}
 }

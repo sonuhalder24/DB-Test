@@ -23,9 +23,7 @@ public class UserRepo extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		Connection conn = null;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/DBConnection", "root", "mysql");
+			conn = getConnection();
 
 			PreparedStatement stmt = conn.prepareStatement(
 				"SELECT * FROM repos WHERE userId = ?");
@@ -45,5 +43,22 @@ public class UserRepo extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
+	}
+
+	private Connection getConnection() throws Exception {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			Class.forName("com.mysql.jdbc.Driver");
+		}
+		try {
+			return DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/DBConnection?useSSL=false&allowPublicKeyRetrieval=true",
+				"root", "mysql");
+		} catch (Exception e) {
+			return DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/DBConnection",
+				"root", "mysql");
+		}
 	}
 }

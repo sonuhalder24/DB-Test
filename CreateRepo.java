@@ -30,9 +30,7 @@ public class CreateRepo extends HttpServlet {
 
 		Connection conn = null;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			conn = DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/DBConnection", "root", "mysql");
+			conn = getConnection();
 
 			String repoId = UUID.randomUUID().toString();
 			PreparedStatement stmt = conn.prepareStatement(
@@ -49,6 +47,23 @@ public class CreateRepo extends HttpServlet {
 			if (conn != null) {
 				try { conn.close(); } catch (Exception e) {}
 			}
+		}
+	}
+
+	private Connection getConnection() throws Exception {
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			Class.forName("com.mysql.jdbc.Driver");
+		}
+		try {
+			return DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/DBConnection?useSSL=false&allowPublicKeyRetrieval=true",
+				"root", "mysql");
+		} catch (Exception e) {
+			return DriverManager.getConnection(
+				"jdbc:mysql://localhost:3306/DBConnection",
+				"root", "mysql");
 		}
 	}
 }

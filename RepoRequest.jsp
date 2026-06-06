@@ -10,9 +10,12 @@
     List<String[]> users = new ArrayList<String[]>();
     Connection conn = null;
     try {
-        Class.forName("com.mysql.jdbc.Driver");
-        conn = DriverManager.getConnection(
-            "jdbc:mysql://localhost:3306/DBConnection", "root", "mysql");
+        try { Class.forName("com.mysql.cj.jdbc.Driver"); } catch (ClassNotFoundException e1) { Class.forName("com.mysql.jdbc.Driver"); }
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/DBConnection?useSSL=false&allowPublicKeyRetrieval=true", "root", "mysql");
+        } catch (Exception e1) {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/DBConnection", "root", "mysql");
+        }
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery("SELECT userId, userName FROM users");
         while (rs.next()) {

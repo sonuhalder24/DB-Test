@@ -5,20 +5,19 @@
 <title>DBConnection</title>
 </head>
 <body>
-<%@ include file="Header.jsp" %>
 <%
     String status = request.getParameter("status");
-    if (status != null) {
-        String alertMsg = "";
-        if ("success".equals(status)) {
-            alertMsg = "User created";
-        } else if ("exists".equals(status)) {
-            alertMsg = "user already exists";
-        } else if ("failed".equals(status)) {
-            alertMsg = "something went wrong";
-        } else if ("create".equals(status)) {
-            alertMsg = "more users are required to create repo";
-        }
+    String alertMsg = null;
+    if ("success".equals(status)) {
+        alertMsg = "User created";
+    } else if ("exists".equals(status)) {
+        alertMsg = "user already exists";
+    } else if ("failed".equals(status)) {
+        alertMsg = "something went wrong";
+    } else if ("create".equals(status)) {
+        alertMsg = "more users are required to create repo";
+    }
+    if (alertMsg != null) {
 %>
 <script type="text/javascript">alert("<%= alertMsg %>");</script>
 <%
