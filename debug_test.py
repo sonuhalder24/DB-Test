@@ -66,7 +66,7 @@ def debug_test():
         inp.send_keys("qwerty001")
         btn.click()
         print("[5] Clicked submit")
-        time.sleep(1)
+        time.sleep(2)
 
         try:
             alert = browser.switch_to.alert

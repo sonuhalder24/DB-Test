@@ -59,18 +59,14 @@ public class CreateUser extends HttpServlet {
 	}
 
 	private Connection getConnection() throws Exception {
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			Class.forName("com.mysql.jdbc.Driver");
-		}
+		Class.forName("com.mysql.cj.jdbc.Driver");
 		try {
 			return DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/DBConnection?useSSL=false&allowPublicKeyRetrieval=true",
+				"jdbc:mysql://localhost:3306/DBConnection?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC",
 				"root", "mysql");
 		} catch (Exception e) {
 			return DriverManager.getConnection(
-				"jdbc:mysql://localhost:3306/DBConnection",
+				"jdbc:mysql://localhost:3306/DBConnection?serverTimezone=UTC",
 				"root", "mysql");
 		}
 	}
