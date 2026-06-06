@@ -23,6 +23,30 @@ def debug_test():
         traceback.print_exc()
         return
 
+    # Step 1.5: Direct HTTP POST - detects old vs new code
+    print("\n[1.5] Direct HTTP POST to /CreateUser...")
+    try:
+        import urllib.request
+        import urllib.parse
+        import re
+        data = urllib.parse.urlencode({'userName': 'httpcheck'}).encode()
+        resp = urllib.request.urlopen('http://localhost:8000/CreateUser', data=data, timeout=5)
+        final_url = resp.url
+        body = resp.read().decode('utf-8', errors='replace')
+        print("[1.5] Final URL:", final_url)
+        if 'status=' in final_url:
+            print("[1.5] OLD CODE RUNNING (redirect) - server NOT restarted after paste!")
+        else:
+            print("[1.5] NEW CODE RUNNING (forward)")
+        m = re.search(r"alert\([\"']([^\"']+)[\"']", body)
+        if m:
+            print("[1.5] Alert content in HTML:", repr(m.group(1)))
+        else:
+            print("[1.5] No alert found. Body snippet:\n", body[:600])
+    except Exception as e:
+        print("[1.5] Direct POST check failed:", e)
+        traceback.print_exc()
+
     # Step 2: Start Chrome
     print("\n[2] Starting Chrome...")
     browser = None
