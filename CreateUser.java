@@ -45,8 +45,10 @@ public class CreateUser extends HttpServlet {
 				insertStmt.executeUpdate();
 				alertMsg = "User created";
 			}
-		} catch (Exception e) {
-			alertMsg = "something went wrong";
+		} catch (Throwable e) {
+			String em = String.valueOf(e.getMessage()).replace("\"", "'").replace("\n", " ").replace("\r", " ");
+			if (em.length() > 120) em = em.substring(0, 120);
+			alertMsg = e.getClass().getSimpleName() + ": " + em;
 			e.printStackTrace();
 		} finally {
 			if (conn != null) {
