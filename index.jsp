@@ -6,16 +6,13 @@
 </head>
 <body>
 <%
-    String status = request.getParameter("status");
-    String alertMsg = null;
-    if ("success".equals(status)) {
-        alertMsg = "User created";
-    } else if ("exists".equals(status)) {
-        alertMsg = "user already exists";
-    } else if ("failed".equals(status)) {
-        alertMsg = "something went wrong";
-    } else if ("create".equals(status)) {
-        alertMsg = "more users are required to create repo";
+    String alertMsg = (String) request.getAttribute("alertMsg");
+    if (alertMsg == null) {
+        String status = request.getParameter("status");
+        if ("success".equals(status)) alertMsg = "User created";
+        else if ("exists".equals(status)) alertMsg = "user already exists";
+        else if ("failed".equals(status)) alertMsg = "something went wrong";
+        else if ("create".equals(status)) alertMsg = "more users are required to create repo";
     }
     if (alertMsg != null) {
 %>

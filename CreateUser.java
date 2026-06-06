@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.UUID;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +26,7 @@ public class CreateUser extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String userName = request.getParameter("userName");
-		String status = "failed";
+		String alertMsg = "something went wrong";
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -34,7 +35,7 @@ public class CreateUser extends HttpServlet {
 			checkStmt.setString(1, userName);
 			ResultSet rs = checkStmt.executeQuery();
 			if (rs.next()) {
-				status = "exists";
+				alertMsg = "user already exists";
 			} else {
 				String userId = UUID.randomUUID().toString();
 				PreparedStatement insertStmt = conn.prepareStatement(
@@ -42,17 +43,19 @@ public class CreateUser extends HttpServlet {
 				insertStmt.setString(1, userId);
 				insertStmt.setString(2, userName);
 				insertStmt.executeUpdate();
-				status = "success";
+				alertMsg = "User created";
 			}
 		} catch (Exception e) {
-			status = "failed";
+			alertMsg = "something went wrong";
 			e.printStackTrace();
 		} finally {
 			if (conn != null) {
 				try { conn.close(); } catch (Exception e) {}
 			}
 		}
-		response.sendRedirect("index.jsp?status=" + status);
+		request.setAttribute("alertMsg", alertMsg);
+		RequestDispatcher rd = request.getRequestDispatcher("/index.jsp");
+		rd.forward(request, response);
 	}
 
 	private Connection getConnection() throws Exception {
